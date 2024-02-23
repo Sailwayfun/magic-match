@@ -6,6 +6,8 @@ import { useState } from "react";
 function App() {
   const [cards, setCards] = useState<CardType[]>([]);
   const [turns, setTurns] = useState<number>(0);
+  const [choice1, setChoice1] = useState<null | number>(null);
+  const [choice2, setChoice2] = useState<null | number>(null);
 
   function startNewGame() {
     const shuffledCards = shuffleCards();
@@ -13,7 +15,11 @@ function App() {
     setTurns(0);
   }
 
-  console.log({ cards, turns });
+  function chooseCards(id: number) {
+    return choice1 ? setChoice2(id) : setChoice1(id);
+  }
+
+  console.log({ choice1, choice2, turns });
 
   return (
     <div className="mx-auto my-10 max-w-[860px]">
@@ -26,7 +32,7 @@ function App() {
       </button>
       <div className="mt-10 grid grid-cols-4 gap-5">
         {cards.map(({ id, src }) => (
-          <Card key={id} img={src} />
+          <Card key={id} img={src} onChooseCards={chooseCards} id={id} />
         ))}
       </div>
     </div>

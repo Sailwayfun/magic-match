@@ -5,10 +5,13 @@ interface CardProps {
 }
 
 const Card = ({ img }: CardProps) => {
+  const cardStyles =
+    "block w-full rounded-md border-2 border-solid border-white";
+
   return (
-    <div className="card">
-      <img src={img} alt="card front" />
-      <img src={cardBack} alt="card back" />
+    <div className="relative">
+      <img src={img} alt="card front" className={cardStyles} />
+      <img src={cardBack} alt="card back" className={cardStyles} />
     </div>
   );
 };

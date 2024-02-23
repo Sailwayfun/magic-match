@@ -2,6 +2,6 @@ export interface CardImage {
   src: string;
 }
 
-export interface Card extends CardImage {
+export interface CardType extends CardImage {
   id: number;
 }

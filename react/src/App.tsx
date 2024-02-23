@@ -1,9 +1,10 @@
 import { shuffleCards } from "./data/cards.ts";
-import { Card } from "./types/card.ts";
+import { CardType } from "./types/card.ts";
+import Card from "./components/Card.tsx";
 import { useState } from "react";
 
 function App() {
-  const [cards, setCards] = useState<Card[]>([]);
+  const [cards, setCards] = useState<CardType[]>([]);
   const [turns, setTurns] = useState<number>(0);
 
   function startNewGame() {
@@ -23,6 +24,11 @@ function App() {
       >
         New Game
       </button>
+      <div className="mt-10 grid grid-cols-4 gap-5">
+        {cards.map(({ id, src }) => (
+          <Card key={id} img={src} />
+        ))}
+      </div>
     </div>
   );
 }

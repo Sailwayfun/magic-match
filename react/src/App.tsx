@@ -61,7 +61,7 @@ function App() {
   }
 
   return (
-    <div className="mx-auto my-10 max-w-[860px]">
+    <div className="mx-auto my-10 max-w-[500px] px-4 md:max-w-3xl md:p-2">
       <h1 className="pb-2">Magic match</h1>
       <button
         onClick={startNewGame}

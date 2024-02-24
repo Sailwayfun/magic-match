@@ -1,13 +1,13 @@
 import { shuffleCards } from "./data/cards.ts";
 import { CardType } from "./types/card.ts";
 import Card from "./components/Card.tsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function App() {
   const [cards, setCards] = useState<CardType[]>([]);
   const [turns, setTurns] = useState<number>(0);
-  const [choice1, setChoice1] = useState<null | number>(null);
-  const [choice2, setChoice2] = useState<null | number>(null);
+  const [choice1, setChoice1] = useState<null | CardType>(null);
+  const [choice2, setChoice2] = useState<null | CardType>(null);
 
   function startNewGame() {
     const shuffledCards = shuffleCards();
@@ -15,8 +15,25 @@ function App() {
     setTurns(0);
   }
 
-  function chooseCards(id: number) {
-    return choice1 ? setChoice2(id) : setChoice1(id);
+  useEffect(() => {
+    function compareCards() {
+      if (!choice1 || !choice2) return;
+      const image1 = choice1.src;
+      const image2 = choice2.src;
+      image1 === image2 ? console.log("matched!") : console.log("not matched!");
+      newTurn();
+    }
+    compareCards();
+  }, [choice1, choice2]);
+
+  function chooseCards(card: CardType) {
+    return choice1 ? setChoice2(card) : setChoice1(card);
+  }
+
+  function newTurn() {
+    setChoice1(null);
+    setChoice2(null);
+    setTurns((prev) => prev + 1);
   }
 
   console.log({ choice1, choice2, turns });
@@ -31,8 +48,8 @@ function App() {
         New Game
       </button>
       <div className="mt-10 grid grid-cols-4 gap-5">
-        {cards.map(({ id, src }) => (
-          <Card key={id} img={src} onChooseCards={chooseCards} id={id} />
+        {cards.map((card) => (
+          <Card key={card.id} onChooseCards={chooseCards} card={card} />
         ))}
       </div>
     </div>

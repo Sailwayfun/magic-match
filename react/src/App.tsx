@@ -1,29 +1,29 @@
-import { shuffleCards } from "./data/cards.ts";
 import { CardType } from "./types/card.ts";
 import Card from "./components/Card.tsx";
-import { useState, useEffect } from "react";
+import {
+  cardReducer,
+  initialState,
+  State,
+  Action,
+} from "./reducers/cardReducer.ts";
+import { useReducer, useEffect, Reducer } from "react";
 
 function App() {
-  const [cards, setCards] = useState<CardType[]>([]);
-  const [turns, setTurns] = useState<number>(0);
-  const [choice1, setChoice1] = useState<null | CardType>(null);
-  const [choice2, setChoice2] = useState<null | CardType>(null);
-  const [isCardsDisable, setIsCardDisable] = useState<boolean>(false);
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(
+    cardReducer,
+    initialState,
+  );
 
   function startNewGame() {
-    const shuffledCards = shuffleCards();
-    setChoice1(null);
-    setChoice2(null);
-    setCards(shuffledCards);
-    setTurns(0);
+    dispatch({ type: "resetGame" });
   }
 
   useEffect(() => {
     function compareCards() {
-      if (!choice1 || !choice2) return;
-      setIsCardDisable(true);
-      const image1 = choice1.src;
-      const image2 = choice2.src;
+      if (!state.choice1 || !state.choice2) return;
+      dispatch({ type: "toggleCardsDisabled" });
+      const image1 = state.choice1.src;
+      const image2 = state.choice2.src;
 
       if (image1 !== image2) {
         return setTimeout(() => {
@@ -31,22 +31,17 @@ function App() {
         }, 500);
       }
 
-      setCards((prevCards) =>
-        prevCards.map((card) => {
-          if (card.src === image1) {
-            return { ...card, matched: true };
-          }
-          return card;
-        }),
-      );
+      dispatch({ type: "matchCards" });
       newTurn();
     }
     compareCards();
-  }, [choice1, choice2]);
+  }, [state.choice1, state.choice2]);
 
   function chooseCards(card: CardType) {
-    if (isCardsDisable) return;
-    return choice1 ? setChoice2(card) : setChoice1(card);
+    if (state.isDisabled) return;
+    return state.choice1
+      ? dispatch({ type: "chooseSecond", card })
+      : dispatch({ type: "chooseFirst", card });
   }
 
   useEffect(() => {
@@ -54,10 +49,7 @@ function App() {
   }, []);
 
   function newTurn() {
-    setChoice1(null);
-    setChoice2(null);
-    setTurns((prev) => prev + 1);
-    setIsCardDisable(false);
+    dispatch({ type: "newTurn" });
   }
 
   return (
@@ -70,16 +62,18 @@ function App() {
         New Game
       </button>
       <div className="mt-10 grid grid-cols-4 gap-5">
-        {cards.map((card) => (
+        {state.cards.map((card) => (
           <Card
             key={card.id}
             onChooseCards={chooseCards}
             card={card}
-            flipped={card === choice1 || card === choice2 || card.matched}
+            flipped={
+              card === state.choice1 || card === state.choice2 || card.matched
+            }
           />
         ))}
       </div>
-      <p className="pt-2">Turns: {turns}</p>
+      <p className="pt-2">Turns: {state.turns}</p>
     </div>
   );
 }

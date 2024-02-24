@@ -20,7 +20,16 @@ function App() {
       if (!choice1 || !choice2) return;
       const image1 = choice1.src;
       const image2 = choice2.src;
-      image1 === image2 ? console.log("matched!") : console.log("not matched!");
+      image1 === image2
+        ? setCards((prevCards) =>
+            prevCards.map((card) => {
+              if (card.src === image1) {
+                return { ...card, matched: true };
+              }
+              return card;
+            }),
+          )
+        : console.log("not matched!");
       newTurn();
     }
     compareCards();
@@ -36,7 +45,7 @@ function App() {
     setTurns((prev) => prev + 1);
   }
 
-  console.log({ choice1, choice2, turns });
+  console.log({ cards, turns });
 
   return (
     <div className="mx-auto my-10 max-w-[860px]">

@@ -8,6 +8,7 @@ function App() {
   const [turns, setTurns] = useState<number>(0);
   const [choice1, setChoice1] = useState<null | CardType>(null);
   const [choice2, setChoice2] = useState<null | CardType>(null);
+  const [isCardsDisable, setIsCardDisable] = useState<boolean>(false);
 
   function startNewGame() {
     const shuffledCards = shuffleCards();
@@ -18,6 +19,7 @@ function App() {
   useEffect(() => {
     function compareCards() {
       if (!choice1 || !choice2) return;
+      setIsCardDisable(true);
       const image1 = choice1.src;
       const image2 = choice2.src;
 
@@ -41,6 +43,7 @@ function App() {
   }, [choice1, choice2]);
 
   function chooseCards(card: CardType) {
+    if (isCardsDisable) return;
     return choice1 ? setChoice2(card) : setChoice1(card);
   }
 
@@ -48,6 +51,7 @@ function App() {
     setChoice1(null);
     setChoice2(null);
     setTurns((prev) => prev + 1);
+    setIsCardDisable(false);
   }
 
   console.log({ cards, turns });

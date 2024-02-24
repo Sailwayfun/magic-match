@@ -12,6 +12,8 @@ function App() {
 
   function startNewGame() {
     const shuffledCards = shuffleCards();
+    setChoice1(null);
+    setChoice2(null);
     setCards(shuffledCards);
     setTurns(0);
   }
@@ -47,6 +49,10 @@ function App() {
     return choice1 ? setChoice2(card) : setChoice1(card);
   }
 
+  useEffect(() => {
+    startNewGame();
+  }, []);
+
   function newTurn() {
     setChoice1(null);
     setChoice2(null);
@@ -54,11 +60,9 @@ function App() {
     setIsCardDisable(false);
   }
 
-  console.log({ cards, turns });
-
   return (
     <div className="mx-auto my-10 max-w-[860px]">
-      <h1>Magic match</h1>
+      <h1 className="pb-2">Magic match</h1>
       <button
         onClick={startNewGame}
         className="rounded border-2 border-solid border-white bg-none px-3 py-[6px] text-base font-bold text-white hover:bg-[#c23866]"
@@ -75,6 +79,7 @@ function App() {
           />
         ))}
       </div>
+      <p className="pt-2">Turns: {turns}</p>
     </div>
   );
 }

@@ -8,11 +8,22 @@ interface CardProps {
   onChooseCards: (chosenCard: CardType) => void;
 }
 
-const Card = ({ card, onChooseCards, flipped }: CardProps) => {
-  const cardStyles =
-    "block w-full rounded-md border-2 border-solid border-white cursor-pointer";
-  const flippedStyles = "[transform:rotateY(0deg)]";
+const cardStyles =
+  "block w-full rounded-md border-2 border-solid border-white cursor-pointer";
 
+const transition = {
+  front: {
+    shown: "[transform:rotateY(0deg)] transition delay-200",
+    covered:
+      "absolute [transform:rotateY(90deg)] transition-all ease-in duration-200",
+  },
+  back: {
+    shown: "transition transition-all ease-in delay-200",
+    covered: "[transform:rotateY(90deg)] duration-200",
+  },
+};
+
+const Card = ({ card, onChooseCards, flipped }: CardProps) => {
   return (
     <div className="relative">
       <img
@@ -20,14 +31,18 @@ const Card = ({ card, onChooseCards, flipped }: CardProps) => {
         alt="card front"
         className={cn(
           cardStyles,
-          "absolute [transform:rotateY(90deg)]",
-          flipped && flippedStyles,
+          transition.front.covered,
+          flipped && transition.front.shown,
         )}
       />
       <img
         src={cardBack}
         alt="card back"
-        className={cardStyles}
+        className={cn(
+          cardStyles,
+          transition.back.shown,
+          flipped && transition.back.covered,
+        )}
         onClick={() => onChooseCards(card)}
       />
     </div>

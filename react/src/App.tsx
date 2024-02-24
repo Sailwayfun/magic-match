@@ -20,16 +20,21 @@ function App() {
       if (!choice1 || !choice2) return;
       const image1 = choice1.src;
       const image2 = choice2.src;
-      image1 === image2
-        ? setCards((prevCards) =>
-            prevCards.map((card) => {
-              if (card.src === image1) {
-                return { ...card, matched: true };
-              }
-              return card;
-            }),
-          )
-        : console.log("not matched!");
+
+      if (image1 !== image2) {
+        return setTimeout(() => {
+          newTurn();
+        }, 500);
+      }
+
+      setCards((prevCards) =>
+        prevCards.map((card) => {
+          if (card.src === image1) {
+            return { ...card, matched: true };
+          }
+          return card;
+        }),
+      );
       newTurn();
     }
     compareCards();
@@ -58,7 +63,12 @@ function App() {
       </button>
       <div className="mt-10 grid grid-cols-4 gap-5">
         {cards.map((card) => (
-          <Card key={card.id} onChooseCards={chooseCards} card={card} />
+          <Card
+            key={card.id}
+            onChooseCards={chooseCards}
+            card={card}
+            flipped={card === choice1 || card === choice2 || card.matched}
+          />
         ))}
       </div>
     </div>
